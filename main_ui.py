@@ -4,10 +4,25 @@ import fitter
 import plotly.graph_objects as go
 
 
+FOOTER_STYLE = {
+    "position": "fixed",
+    "bottom": 0,
+    "left": 0,
+    "right": 0,
+    "height": 50,
+    "padding": "1rem 1rem",
+#    "background-color": "white",
+}
+
 class PSDAnalyzerUI:
     def __init__(self):
         self.layout = html.Div([
-            dbc.Row([html.H1("Particule Size Distribution Analyzer")], style={'textAlign':'center'}),
+            dbc.Row([
+                dbc.Col([html.H1("Particule Size Distribution Analyzer", style={'textAlign':'center'})]),
+                dbc.Col([
+                    dbc.Button("Get help!", href="https://docs.hydrogeotools.com/psd-analyzer.html"),
+                ], width="auto"),
+            ], justify="end", align="center"),
             html.Hr(),
             dbc.Row([
                 dbc.Col(self._visualization_pannel(), width=7),
@@ -15,7 +30,8 @@ class PSDAnalyzerUI:
                     dbc.Row(self._calibration_pannel()),
                     dbc.Row(self._results_pannel())
                 ]),
-            ])
+            ]),
+            dbc.Row([self._footer()]),
         ])
         return
     
@@ -45,7 +61,9 @@ class PSDAnalyzerUI:
         ]
         graph = [
             html.H6("Visualize your data:", id="data-vis-text"),
-            dcc.Graph(id='graph-content')
+            dcc.Graph(id='graph-content'),
+            dbc.Button('Download a sample curve', id='button-sample-wrc', n_clicks=0),
+            dcc.Download(id="download-sample-curve"),
         ]
         visualization_card = dbc.Card(
             dbc.CardBody(
@@ -116,6 +134,15 @@ class PSDAnalyzerUI:
             )
         )
         return results_card
+    
+    def _footer(self):
+        contents = [ html.P([
+            "Application created by HydroGeoTools. See ", 
+            html.A("www.hydrogeotools.com", href="https://www.hydrogeotools.com"),
+            " for more contents.",
+        ]) ]
+        footer = html.Footer(contents, style=FOOTER_STYLE)
+        return footer
     
     def packLayout(self):
         return dbc.Container(self.layout, fluid=True)

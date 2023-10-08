@@ -18,6 +18,16 @@ main_ui = UI_file.PSDAnalyzerUI()
 app.layout = main_ui.packLayout()
 
 
+
+@app.callback(
+    Output("download-sample-curve", "data"),
+    Input("button-sample-wrc", "n_clicks"),
+    prevent_initial_call=True,
+)
+def download_sample_wrc(n_clicks):
+    return dcc.send_file("./examples/psd1_tailings.xlsx")
+
+
 def parse_contents(contents, filename):
     if contents is None: return
     content_type, content_string = contents.split(',')
